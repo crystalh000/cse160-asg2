@@ -159,9 +159,25 @@ function main() {
 
   // Clear <canvas>
   // gl.clear(gl.COLOR_BUFFER_BIT);
-  renderAllShapes();
+  // renderAllShapes();
+  requestAnimationFrame(tick);
+
 }
 
+var g_startTime=performance.now() / 1000.0;
+var g_seconds=performance.now() / 1000.0 - g_startTime;
+// called by browser repeatedly whenever it's time
+
+function tick() {
+  // print some debug information so we know we are running
+  g_seconds = performance.now() / 1000.0 - g_startTime;
+  console.log(performance.now());
+
+  // draw everything
+  renderAllShapes();
+  // tell the browser to update again
+  requestAnimationFrame(tick);
+}
 
 
 var g_shapesList = [];
@@ -240,34 +256,36 @@ function renderAllShapes() {
   body.render();
 
   // draw a left arm
-  var leftArm = new Cube();
-  leftArm.color = [1,1,0,1];
-  leftArm.matrix.setTranslate(0,-0.5,0.0);
-  leftArm.matrix.rotate(-5,1,0,0); // rotate the arm
-  leftArm.matrix.rotate(-g_yellowAngle,0,0,1);
-  var yellowCoordinatesMat=new Matrix4(leftArm.matrix);
-  leftArm.matrix.scale(0.25,0.7,0.5);
-  leftArm.matrix.translate(-0.5, 0,0);
-  leftArm.render();
+  var yellow = new Cube();
+  yellow.color = [1,1,0,1];
+  yellow.matrix.setTranslate(0,-0.5,0.0);
+  yellow.matrix.rotate(-5,1,0,0); // rotate the arm
+  // yellow.matrix.rotate(-g_yellowAngle,0,0,1);
+  yellow.matrix.rotate(45*Math.sin(g_seconds),0,0,1);
+  
+  var yellowCoordinatesMat=new Matrix4(yellow.matrix);
+  yellow.matrix.scale(0.25,0.7,0.5);
+  yellow.matrix.translate(-0.5, 0,0);
+  yellow.render();
 
   // test box
-  var box = new Cube();
-  box.color = [1,0,1,1];
+  var magenta = new Cube();
+  magenta.color = [1,0,1,1];
   // box.matrix = leftArm.matrix;
-  box.matrix = yellowCoordinatesMat;
-  box.matrix.translate(0,0.65,0);
+  magenta.matrix = yellowCoordinatesMat;
+  magenta.matrix.translate(0,0.65,0);
   // box.matrix.rotate(0,1,0,0);
-  box.matrix.rotate(-g_magentaAngle,0,0,1);
-  box.matrix.scale(0.3,0.3,0.3);
-  box.matrix.translate(-0.5,0, -0.001);
+  magenta.matrix.rotate(-g_magentaAngle,0,0,1);
+  magenta.matrix.scale(0.3,0.3,0.3);
+  magenta.matrix.translate(-0.5,0, -0.001);
 
-  box.render();
+  magenta.render();
 
 
   // check the time at the end of the function and show on web page
   var duration = performance.now() - startTime;
   // sendTextToHTML("numdot: " + len + " ms: " + Math.floor(duration) + " fps: " + Math.floor(1000/duration), "numdot");
-  sendTextToHTML("ms: " + Math.floor(duration) + " fps: " + Math.floor(1000/duration));
+  // sendTextToHTML("ms: " + Math.floor(duration) + " fps: " + Math.floor(1000/duration));
 }
 
 // Set the text of a HTML element
