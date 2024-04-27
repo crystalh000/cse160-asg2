@@ -31,6 +31,8 @@ let u_ModelMatrix;
 let g_yellowAngle = 0;
 let g_magentaAngle = 0;
 let g_globalAngle = 0; // Add this line
+let g_yellowAnimation=false;
+let g_magentaAnimation=false;
 
 function setUpWebGL() {
    // Retrieve <canvas> element
@@ -113,32 +115,18 @@ let g_selectedSegments = 10;
 // Set up actions for the HTML UI elements
 function addActionsForHTMLUI() {
 
-  // // Button Events (Shape Type)
-  // document.getElementById('green').onclick = function() { g_selectedColor = [0.0,1.0,0.0,1.0]; };
-  // document.getElementById('red').onclick = function() {g_selectedColor = [1.0,0.0,0.0,1.0]; };
-  // document.getElementById('clearButton').onclick = function() { g_shapesList=[]; renderAllShapes(); };
+  document.getElementById('animationYellowOffButton').onclick = function() {g_yellowAnimation=false;};
+  document.getElementById('animationYellowOnButton').onclick = function() {g_yellowAnimation=true;};
 
-  // document.getElementById('pointButton').onclick = function() {g_selectedType=POINT};
-  // document.getElementById('triButton').onclick = function() {g_selectedType=TRIANGLE};
-  // document.getElementById('circleButton').onclick = function() {g_selectedType=CIRCLE};
 
-  // document.getElementById('drawPictureButton').onclick = drawPicture; 
+  document.getElementById('animationMagentaOffButton').onclick = function() {g_magentaAnimation=false;};
+  document.getElementById('animationMagentaOnButton').onclick = function() {g_magentaAnimation=true;};
 
-  // // Slider Events
-  // document.getElementById('redSlide').addEventListener('input', function() { g_selectedColor[0] = this.value/100;   });
-  // document.getElementById('greenSlide').addEventListener('input', function() { g_selectedColor[1] = this.value/100; });
-  // document.getElementById('blueSlide').addEventListener('input',  function() { g_selectedColor[2] = this.value/100;  });
   document.getElementById('yellowSlide').addEventListener('mousemove', function() { g_yellowAngle = this.value; renderAllShapes(); });
   document.getElementById('magentaSlide').addEventListener('mousemove', function() { g_magentaAngle = this.value; renderAllShapes(); });
 
   document.getElementById('angleSlide').addEventListener('mousemove',  function() { g_globalAngle = this.value; renderAllShapes();  });
-  // Size Slider Events
-  // document.getElementById('sizeSlide').addEventListener('input', function() { g_selectedSize = this.value });
-
-  // Segment Slider Events
-  // document.getElementById('segmentsSlide').addEventListener('input', function() { g_selectedSegments = this.value });
-  // document.getElementById('segmentsSlide').addEventListener('input', function() { g_selectedSegments = parseInt(this.value); });
-
+  
 }
 function main() {
   // Set up canvas and get gl variables
@@ -172,6 +160,8 @@ function tick() {
   // print some debug information so we know we are running
   g_seconds = performance.now() / 1000.0 - g_startTime;
   console.log(performance.now());
+
+  updateAnimationAngles();
 
   // draw everything
   renderAllShapes();
@@ -231,6 +221,15 @@ function convertCoordinatesEventToGL(ev) {
   return([x,y]);
 }
 
+function updateAnimationAngles() {
+  if (g_yellowAnimation) {
+    g_yellowAngle = (45 * Math.sin(g_seconds));
+  }
+  if (g_magentaAnimation) {
+    g_magentaAngle = (45 * Math.sin(3 * g_seconds));
+  }
+}
+
 function renderAllShapes() {
   // Check the time at the start of the function
   var startTime = performance.now();
@@ -260,8 +259,14 @@ function renderAllShapes() {
   yellow.color = [1,1,0,1];
   yellow.matrix.setTranslate(0,-0.5,0.0);
   yellow.matrix.rotate(-5,1,0,0); // rotate the arm
-  // yellow.matrix.rotate(-g_yellowAngle,0,0,1);
-  yellow.matrix.rotate(45*Math.sin(g_seconds),0,0,1);
+  yellow.matrix.rotate(-g_yellowAngle,0,0,1);
+  // yellow.matrix.rotate(45*Math.sin(g_seconds),0,0,1);
+
+  // if (g_yellowAnimation) {
+  //   yellow.matrix.rotate(45*Math.sin(g_seconds),0,0,1);
+  // } else { 
+  //   yellow.matrix.rotate(-g_yellowAngle,0,0,1);
+  // }
   
   var yellowCoordinatesMat=new Matrix4(yellow.matrix);
   yellow.matrix.scale(0.25,0.7,0.5);
