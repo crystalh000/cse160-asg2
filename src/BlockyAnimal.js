@@ -29,6 +29,7 @@ let u_FragColor;
 let u_Size;
 let u_ModelMatrix;
 let g_yellowAngle = 0;
+let g_magentaAngle = 0;
 let g_globalAngle = 0; // Add this line
 
 function setUpWebGL() {
@@ -128,6 +129,7 @@ function addActionsForHTMLUI() {
   // document.getElementById('greenSlide').addEventListener('input', function() { g_selectedColor[1] = this.value/100; });
   // document.getElementById('blueSlide').addEventListener('input',  function() { g_selectedColor[2] = this.value/100;  });
   document.getElementById('yellowSlide').addEventListener('mousemove', function() { g_yellowAngle = this.value; renderAllShapes(); });
+  document.getElementById('magentaSlide').addEventListener('mousemove', function() { g_magentaAngle = this.value; renderAllShapes(); });
 
   document.getElementById('angleSlide').addEventListener('mousemove',  function() { g_globalAngle = this.value; renderAllShapes();  });
   // Size Slider Events
@@ -241,7 +243,9 @@ function renderAllShapes() {
   var leftArm = new Cube();
   leftArm.color = [1,1,0,1];
   leftArm.matrix.setTranslate(0,-0.5,0.0);
+  leftArm.matrix.rotate(-5,1,0,0); // rotate the arm
   leftArm.matrix.rotate(-g_yellowAngle,0,0,1);
+  var yellowCoordinatesMat=new Matrix4(leftArm.matrix);
   leftArm.matrix.scale(0.25,0.7,0.5);
   leftArm.matrix.translate(-0.5, 0,0);
   leftArm.render();
@@ -249,16 +253,21 @@ function renderAllShapes() {
   // test box
   var box = new Cube();
   box.color = [1,0,1,1];
-  box.matrix.translate(-0.1,0.1,0,0);
-  box.matrix.rotate(-30,1,0,0);
-  box.matrix.scale(0.2,0.4,0.2);
+  // box.matrix = leftArm.matrix;
+  box.matrix = yellowCoordinatesMat;
+  box.matrix.translate(0,0.65,0);
+  // box.matrix.rotate(0,1,0,0);
+  box.matrix.rotate(-g_magentaAngle,0,0,1);
+  box.matrix.scale(0.3,0.3,0.3);
+  box.matrix.translate(-0.5,0, -0.001);
+
   box.render();
 
 
   // check the time at the end of the function and show on web page
   var duration = performance.now() - startTime;
   // sendTextToHTML("numdot: " + len + " ms: " + Math.floor(duration) + " fps: " + Math.floor(1000/duration), "numdot");
-
+  sendTextToHTML("ms: " + Math.floor(duration) + " fps: " + Math.floor(1000/duration));
 }
 
 // Set the text of a HTML element
