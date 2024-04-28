@@ -270,6 +270,7 @@ function updateAnimationAngles() {
 
     // arm rotation
     g_armAngleL = Math.sin(4 * g_seconds) * maxSwingAngle;
+    g_armAngleR = Math.sin(4 * g_seconds + Math.PI) * maxSwingAngle;
   
   }
   
@@ -358,11 +359,21 @@ function renderAllShapes() {
   armL.render();
 
   // right arm
+  // var armR = new Cube();
+  // armR.color = [251/255, 231/255, 239/255, 1.0];
+  // armR.matrix.translate(0.25,-0.45,0.1);
+  // armR.matrix.scale(0.1,0.4,0.15);
+
+  // armR.render();
   var armR = new Cube();
   armR.color = [251/255, 231/255, 239/255, 1.0];
-  armR.matrix.translate(0.25,-0.45,0.1);
+  armR.matrix.set(bodyCoordinatesMat); // Start with the head's transformations
+  // armL.matrix.translate(-0.1,0.1,0.1);
+  armR.matrix.translate(0.5, 0.65, 0.1);
+  armR.matrix.rotate(-g_armAngleR,1,0,0); // Rotate around the x-axis
+  // armL.matrix.translate(-0.35,-0.45,-0.1); // for the pivot
+  armR.matrix.translate(0, -0.55, 0);
   armR.matrix.scale(0.1,0.4,0.15);
-
   armR.render();
   
 
