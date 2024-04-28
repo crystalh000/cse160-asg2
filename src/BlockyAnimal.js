@@ -391,11 +391,24 @@ function renderAllShapes() {
   yellow.matrix.translate(-0.5, 0 + 0.1,0);
   yellow.render();
 
-  // var head = new Cube();
-  // head.color = [181/255, 115/255, 22/255, 1.0]; // Brown color
-  // head.matrix.setTranslate(0.25, 0.25, 0); // Position the head above the body
-  // head.matrix.scale(0.7, 0.7, 0.7); // Scale down the size of the head
-  // head.render();
+  // cone 
+  // Create a new Cone object
+var cone = new Cone();
+cone.color = [137/255, 196/255, 244/255, 1.0]; // Set the color of the cone
+
+// Set the transformation matrix for the cone
+cone.matrix.translate(0.5, 0.5, 0.001);
+// cone.matrix.rotate(-5, 1, 0, 0); // Rotate the cone
+// cone.matrix.rotate(-g_yellowAngle, 1, 0, 0);
+
+// Scale and translate the cone
+cone.matrix.scale(0.45, 0.45, 0.45);
+// cone.matrix.translate(-0.5, 0 + 0.1, 0);
+
+// Draw the cone
+cone.render();
+
+
 
   
 
