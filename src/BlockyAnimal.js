@@ -29,7 +29,8 @@ let u_FragColor;
 let u_Size;
 let u_ModelMatrix;
 let g_yellowAngle = 0;
-let g_magentaAngle = 0;
+let g_magentaAngleL = 0;
+let g_magentaAngleR = 0;
 let g_globalAngle = 0; // Add this line
 let g_yellowAnimation=false;
 let g_magentaAnimation=false;
@@ -123,7 +124,7 @@ function addActionsForHTMLUI() {
   document.getElementById('animationMagentaOnButton').onclick = function() {g_magentaAnimation=true;};
 
   document.getElementById('yellowSlide').addEventListener('mousemove', function() { g_yellowAngle = this.value; renderAllShapes(); });
-  document.getElementById('magentaSlide').addEventListener('mousemove', function() { g_magentaAngle = this.value; renderAllShapes(); });
+  document.getElementById('magentaSlide').addEventListener('mousemove', function() { g_magentaAngleR = this.value; g_magentaAngleL = this.value; renderAllShapes(); });
 
   document.getElementById('angleSlide').addEventListener('mousemove',  function() { g_globalAngle = this.value; renderAllShapes();  });
   
@@ -223,10 +224,11 @@ function convertCoordinatesEventToGL(ev) {
 
 function updateAnimationAngles() {
   if (g_yellowAnimation) {
-    g_yellowAngle = (45 * Math.sin(g_seconds));
+    g_yellowAngle = (15 * Math.sin(g_seconds));
   }
   if (g_magentaAnimation) {
-    g_magentaAngle = (45 * Math.sin(3 * g_seconds));
+    g_magentaAngleR = (25 * Math.sin(3 * g_seconds));
+    g_magentaAngleL = (25 * Math.sin(3 * g_seconds));
   }
 }
 
@@ -248,43 +250,83 @@ function renderAllShapes() {
 
   // draw the body cube
   var body = new Cube();
-  body.color = [1.0, 0.0, 0.0, 1.0];
+  // body.color = [1.0, 0.0, 0.0, 1.0];
+  var body = new Cube();
+  body.color = [251/255, 231/255, 239/255, 1.0];
   body.matrix.translate(-0.25, -0.75, 0.0);
   body.matrix.rotate(-5,1,0,0);
-  body.matrix.scale(0.5,0.3,0.5); // scale happening first then translate is happening
+  body.matrix.scale(0.5, 0.5, 0.5); // Adjusted scale to be the same in all dimensions
   body.render();
 
-  // draw a left arm
-  var yellow = new Cube();
-  yellow.color = [1,1,0,1];
-  yellow.matrix.setTranslate(0,-0.5,0.0);
-  yellow.matrix.rotate(-5,1,0,0); // rotate the arm
-  yellow.matrix.rotate(-g_yellowAngle,0,0,1);
-  // yellow.matrix.rotate(45*Math.sin(g_seconds),0,0,1);
+  
 
-  // if (g_yellowAnimation) {
-  //   yellow.matrix.rotate(45*Math.sin(g_seconds),0,0,1);
-  // } else { 
-  //   yellow.matrix.rotate(-g_yellowAngle,0,0,1);
-  // }
+  // draw the rabbit head
+  var yellow = new Cube();
+  // yellow.color = [1,1,0,1];
+  yellow.color = [251/255, 231/255, 239/255, 1.0];
+
+  yellow.matrix.setTranslate(0,-0.25,0.001);
+  yellow.matrix.rotate(-5,1,0,0); // rotate the arm
+  yellow.matrix.rotate(-g_yellowAngle,1,0,0);
   
   var yellowCoordinatesMat=new Matrix4(yellow.matrix);
-  yellow.matrix.scale(0.25,0.7,0.5);
+  yellow.matrix.scale(0.45,0.45,0.45);
   yellow.matrix.translate(-0.5, 0,0);
   yellow.render();
 
-  // test box
-  var magenta = new Cube();
-  magenta.color = [1,0,1,1];
-  // box.matrix = leftArm.matrix;
-  magenta.matrix = yellowCoordinatesMat;
-  magenta.matrix.translate(0,0.65,0);
-  // box.matrix.rotate(0,1,0,0);
-  magenta.matrix.rotate(-g_magentaAngle,0,0,1);
-  magenta.matrix.scale(0.3,0.3,0.3);
-  magenta.matrix.translate(-0.5,0, -0.001);
+  // var head = new Cube();
+  // head.color = [181/255, 115/255, 22/255, 1.0]; // Brown color
+  // head.matrix.setTranslate(0.25, 0.25, 0); // Position the head above the body
+  // head.matrix.scale(0.7, 0.7, 0.7); // Scale down the size of the head
+  // head.render();
 
-  magenta.render();
+  // test box
+  // var earR = new Cube();
+  // earR.color = [251/255, 231/255, 239/255, 1.0];
+  // // box.matrix = leftArm.matrix;
+  // earR.matrix = yellowCoordinatesMat;
+  // earR.matrix.translate(0.10,0.5,0.01);
+  // // box.matrix.rotate(0,1,0,0);
+  // earR.matrix.rotate(-g_magentaAngle,1,0,0);
+  // earR.matrix.scale(0.1,0.41,0.1);
+  // // earL.matrix.translate(-0.5,0, -0.01);
+
+  // earR.render();
+
+
+  // // test box
+  // var earL = new Cube();
+  // earL.color = [251/255, 231/255, 239/255, 1.0];
+  // earL.matrix = yellowCoordinatesMat;
+  // earL.matrix.setTranslate(-0.2,0.25,0.01); 
+  // earL.matrix.rotate(-g_magentaAngle,1,0,0);
+  // earL.matrix.scale(0.1,0.41,0.1);
+  // earL.render();
+
+ // Right ear
+  // Right ear
+  var earR = new Cube();
+  earR.color = [251/255, 231/255, 239/255, 1.0];
+  // earR.matrix = new Matrix4(yellowCoordinatesMat);
+  earR.matrix.set(yellowCoordinatesMat); // Start with the head's transformations
+
+  earR.matrix.translate(0.10,0.5,0.01);
+  earR.matrix.rotate(-g_magentaAngleR,1,0,0);
+  earR.matrix.scale(0.1,0.41,0.1);
+  earR.render();
+
+  // Left ear
+  var earL = new Cube();
+  earL.color = [251/255, 231/255, 239/255, 1.0];
+  // earL.matrix = new Matrix4(yellowCoordinatesMat);
+  earL.matrix.set(yellowCoordinatesMat); // Start with the head's transformations
+
+  earL.matrix.translate(-0.2,0.5,0.01); 
+  earL.matrix.rotate(-g_magentaAngleL,1,0,0);
+  earL.matrix.scale(0.1,0.41,0.1);
+  earL.render();
+
+
 
 
   // check the time at the end of the function and show on web page
