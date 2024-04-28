@@ -41,6 +41,8 @@ let g_magentaAnimation=false;
 let g_runAnimation = false;
 let maxSwingAngle = 25;
 let maxLiftHeight = 0.1;
+let g_armAngleR = 0;
+let g_armAngleL = 0;
 
 
 function setUpWebGL() {
@@ -290,70 +292,47 @@ function renderAllShapes() {
   body.matrix.scale(0.5, 0.5, 0.5); // Adjusted scale to be the same in all dimensions
   body.render();
 
-  // // right foot
-  // var footR = new Cube();
-  // footR.color = [251/255, 231/255, 239/255, 1.0];
-  // footR.matrix.translate(0.15,-0.7,0.15); 
-  // // footR.matrix.rotate(-g_footAngleR,1,0,0);
-  // // Move the foot up by the lift amount
-  // // right foot
-
-  // // Rotate the foot
-  // footR.matrix.rotate(g_footAngleR, 1, 0, 0);
-
-  // // Move the foot up by the lift amount and then back down
-  // footR.matrix.translate(0, g_footLiftR, 0);
-
-  // // Scale the foot
-  // footR.matrix.scale(0.1,0.18,0.15);
-
-  // // Render the foot
-  // footR.render();
-
-
-
-  // // Left foot
-  // var footL = new Cube();
-  // footL.color = [251/255, 231/255, 239/255, 1.0];
-  // footL.matrix.translate(-0.15,-0.7,0.15); 
-  // footL.matrix.rotate(g_footAngleL, 1, 0, 0);
-  // footL.matrix.translate(0, g_footLiftL, 0);
-  // footL.matrix.translate(0, -g_footLiftL, 0);
-
   // right foot
-var footR = new Cube();
-footR.color = [251/255, 231/255, 239/255, 1.0];
-footR.matrix.translate(0.15,-0.7,0.15); 
+  var footR = new Cube();
+  footR.color = [251/255, 231/255, 239/255, 1.0];
+  footR.matrix.translate(0.15,-0.7,0.15); 
 
-// Move the foot up by the lift amount
-footR.matrix.translate(0, g_footLiftR, 0);
+  // Move the foot up by the lift amount
+  footR.matrix.translate(0, g_footLiftR, 0);
 
-// Rotate the foot
-footR.matrix.rotate(g_footAngleR, 1, 0, 0);
+  // Rotate the foot
+  footR.matrix.rotate(g_footAngleR, 1, 0, 0);
 
-// Scale the foot
-footR.matrix.scale(0.1,0.18,0.15);
+  // Scale the foot
+  footR.matrix.scale(0.1,0.18,0.15);
 
-// Render the foot
-footR.render();
+  // Render the foot
+  footR.render();
 
-// Left foot
-var footL = new Cube();
-footL.color = [251/255, 231/255, 239/255, 1.0];
-footL.matrix.translate(-0.25,-0.7,0.15); 
+  // Left foot
+  var footL = new Cube();
+  footL.color = [251/255, 231/255, 239/255, 1.0];
+  footL.matrix.translate(-0.25,-0.7,0.15); 
 
-// Move the foot up by the lift amount
-footL.matrix.translate(0, g_footLiftL, 0);
+  // Move the foot up by the lift amount
+  footL.matrix.translate(0, g_footLiftL, 0);
 
-// Rotate the foot
-footL.matrix.rotate(g_footAngleL, 1, 0, 0);
+  // Rotate the foot
+  footL.matrix.rotate(g_footAngleL, 1, 0, 0);
 
-// Scale the foot
-footL.matrix.scale(0.1,0.18,0.15);
+  // Scale the foot
+  footL.matrix.scale(0.1,0.18,0.15);
 
-// Render the foot
-footL.render();
+  // Render the foot
+  footL.render();
 
+  // left arm
+  var armL = new Cube();
+  armL.color = [251/255, 231/255, 239/255, 1.0];
+  armL.matrix.translate(-0.35,-0.2,0.5);
+  armL.matrix.scale(0.1,0.4,0.15);
+
+  armL.render();
   
 
   // draw the rabbit head
