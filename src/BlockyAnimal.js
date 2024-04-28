@@ -43,6 +43,7 @@ let maxSwingAngle = 25;
 let maxLiftHeight = 0.1;
 let g_armAngleR = 0;
 let g_armAngleL = 0;
+let g_bodyAngle = 0;
 
 
 function setUpWebGL() {
@@ -263,7 +264,15 @@ function updateAnimationAngles() {
     var liftHeightL = Math.abs(Math.sin(4 * g_seconds + Math.PI)) * maxLiftHeight; // Add phase offset
     g_footAngleL = swingAngleL;
     g_footLiftL = liftHeightL;
+
+    // Body rotation
+    g_bodyAngle = Math.sin(4 * g_seconds) * 5; // Adjust the multiplier as needed
+
+    // arm rotation
+    g_armAngleL = Math.sin(4 * g_seconds) * maxSwingAngle;
+  
   }
+  
 }
 
 function renderAllShapes() {
@@ -283,12 +292,12 @@ function renderAllShapes() {
   // drawTriangle3D([-1.0,0.0,0.0, -0.5, -1.0, 0.0, 0.0, 0.0, 0.0]);
 
   // draw the body cube
-  var body = new Cube();
   // body.color = [1.0, 0.0, 0.0, 1.0];
-  var body = new Cube();
+  body = new Cube();
   body.color = [251/255, 231/255, 239/255, 1.0];
   body.matrix.translate(-0.25, -0.75 + 0.2, 0.0);
-  body.matrix.rotate(-5,1,0,0);
+  body.matrix.rotate(g_bodyAngle, 0, 0, 1);
+  var bodyCoordinatesMat=new Matrix4(body.matrix);
   body.matrix.scale(0.5, 0.5, 0.5); // Adjusted scale to be the same in all dimensions
   body.render();
 
@@ -327,12 +336,34 @@ function renderAllShapes() {
   footL.render();
 
   // left arm
+  // var armL = new Cube();
+  // armL.color = [251/255, 231/255, 239/255, 1.0];
+  // armL.matrix.set(bodyCoordinatesMat); // Start with the head's transformations
+  // armL.matrix.translate(-0.35,-0.45,0.1);
+  // armL.matrix.rotate(-g_armAngleL,1,0,0);
+  // armL.matrix.scale(0.1,0.4,0.15);
+
+  // armL.render();
+
+  // left arm
   var armL = new Cube();
   armL.color = [251/255, 231/255, 239/255, 1.0];
-  armL.matrix.translate(-0.35,-0.2,0.5);
+  armL.matrix.set(bodyCoordinatesMat); // Start with the head's transformations
+  // armL.matrix.translate(-0.1,0.1,0.1);
+  armL.matrix.translate(-0.1, 0.65, 0.1);
+  armL.matrix.rotate(-g_armAngleL,1,0,0); // Rotate around the x-axis
+  // armL.matrix.translate(-0.35,-0.45,-0.1); // for the pivot
+  armL.matrix.translate(0, -0.55, 0);
   armL.matrix.scale(0.1,0.4,0.15);
-
   armL.render();
+
+  // right arm
+  var armR = new Cube();
+  armR.color = [251/255, 231/255, 239/255, 1.0];
+  armR.matrix.translate(0.25,-0.45,0.1);
+  armR.matrix.scale(0.1,0.4,0.15);
+
+  armR.render();
   
 
   // draw the rabbit head
