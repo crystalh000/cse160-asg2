@@ -31,9 +31,17 @@ let u_ModelMatrix;
 let g_yellowAngle = 0;
 let g_magentaAngleL = 0;
 let g_magentaAngleR = 0;
+let g_footAngleR = 0;
+let g_footAngleL = 0;
+let g_footLiftR = 0;
+let g_footLiftL = 0;
 let g_globalAngle = 0; // Add this line
 let g_yellowAnimation=false;
 let g_magentaAnimation=false;
+let g_runAnimation = false;
+let maxSwingAngle = 25;
+let maxLiftHeight = 0.1;
+
 
 function setUpWebGL() {
    // Retrieve <canvas> element
@@ -122,6 +130,9 @@ function addActionsForHTMLUI() {
 
   document.getElementById('animationMagentaOffButton').onclick = function() {g_magentaAnimation=false;};
   document.getElementById('animationMagentaOnButton').onclick = function() {g_magentaAnimation=true;};
+  
+  document.getElementById('animationRunOffButton').onclick = function() {g_runAnimation=false;};
+  document.getElementById('animationRunOnButton').onclick = function() {g_runAnimation=true;};
 
   document.getElementById('yellowSlide').addEventListener('mousemove', function() { g_yellowAngle = this.value; renderAllShapes(); });
   document.getElementById('magentaSlide').addEventListener('mousemove', function() { g_magentaAngleR = this.value; g_magentaAngleL = this.value; renderAllShapes(); });
@@ -230,6 +241,27 @@ function updateAnimationAngles() {
     g_magentaAngleR = (25 * Math.sin(3 * g_seconds));
     g_magentaAngleL = (25 * Math.sin(3 * g_seconds));
   }
+  if (g_runAnimation) {
+    // var swingAngle = Math.sin(4* g_seconds) * maxSwingAngle;
+
+    // // Calculate the lift height based on time
+    // var liftHeight = Math.abs(Math.sin(4 * g_seconds)) * maxLiftHeight;
+
+    // // Apply the swing and lift to the foot angle
+    // g_footAngleR = swingAngle;
+    // g_footLiftR = liftHeight;
+    // Right foot
+    var swingAngleR = Math.sin(4 * g_seconds) * maxSwingAngle;
+    var liftHeightR = Math.abs(Math.sin(4 * g_seconds)) * maxLiftHeight;
+    g_footAngleR = swingAngleR;
+    g_footLiftR = liftHeightR;
+
+    // Left foot
+    var swingAngleL = Math.sin(4 * g_seconds + Math.PI) * maxSwingAngle; // Add phase offset
+    var liftHeightL = Math.abs(Math.sin(4 * g_seconds + Math.PI)) * maxLiftHeight; // Add phase offset
+    g_footAngleL = swingAngleL;
+    g_footLiftL = liftHeightL;
+  }
 }
 
 function renderAllShapes() {
@@ -253,10 +285,74 @@ function renderAllShapes() {
   // body.color = [1.0, 0.0, 0.0, 1.0];
   var body = new Cube();
   body.color = [251/255, 231/255, 239/255, 1.0];
-  body.matrix.translate(-0.25, -0.75, 0.0);
+  body.matrix.translate(-0.25, -0.75 + 0.2, 0.0);
   body.matrix.rotate(-5,1,0,0);
   body.matrix.scale(0.5, 0.5, 0.5); // Adjusted scale to be the same in all dimensions
   body.render();
+
+  // // right foot
+  // var footR = new Cube();
+  // footR.color = [251/255, 231/255, 239/255, 1.0];
+  // footR.matrix.translate(0.15,-0.7,0.15); 
+  // // footR.matrix.rotate(-g_footAngleR,1,0,0);
+  // // Move the foot up by the lift amount
+  // // right foot
+
+  // // Rotate the foot
+  // footR.matrix.rotate(g_footAngleR, 1, 0, 0);
+
+  // // Move the foot up by the lift amount and then back down
+  // footR.matrix.translate(0, g_footLiftR, 0);
+
+  // // Scale the foot
+  // footR.matrix.scale(0.1,0.18,0.15);
+
+  // // Render the foot
+  // footR.render();
+
+
+
+  // // Left foot
+  // var footL = new Cube();
+  // footL.color = [251/255, 231/255, 239/255, 1.0];
+  // footL.matrix.translate(-0.15,-0.7,0.15); 
+  // footL.matrix.rotate(g_footAngleL, 1, 0, 0);
+  // footL.matrix.translate(0, g_footLiftL, 0);
+  // footL.matrix.translate(0, -g_footLiftL, 0);
+
+  // right foot
+var footR = new Cube();
+footR.color = [251/255, 231/255, 239/255, 1.0];
+footR.matrix.translate(0.15,-0.7,0.15); 
+
+// Move the foot up by the lift amount
+footR.matrix.translate(0, g_footLiftR, 0);
+
+// Rotate the foot
+footR.matrix.rotate(g_footAngleR, 1, 0, 0);
+
+// Scale the foot
+footR.matrix.scale(0.1,0.18,0.15);
+
+// Render the foot
+footR.render();
+
+// Left foot
+var footL = new Cube();
+footL.color = [251/255, 231/255, 239/255, 1.0];
+footL.matrix.translate(-0.25,-0.7,0.15); 
+
+// Move the foot up by the lift amount
+footL.matrix.translate(0, g_footLiftL, 0);
+
+// Rotate the foot
+footL.matrix.rotate(g_footAngleL, 1, 0, 0);
+
+// Scale the foot
+footL.matrix.scale(0.1,0.18,0.15);
+
+// Render the foot
+footL.render();
 
   
 
@@ -265,13 +361,13 @@ function renderAllShapes() {
   // yellow.color = [1,1,0,1];
   yellow.color = [251/255, 231/255, 239/255, 1.0];
 
-  yellow.matrix.setTranslate(0,-0.25,0.001);
+  yellow.matrix.setTranslate(0,-0.25 + 0.1,0.001);
   yellow.matrix.rotate(-5,1,0,0); // rotate the arm
   yellow.matrix.rotate(-g_yellowAngle,1,0,0);
   
   var yellowCoordinatesMat=new Matrix4(yellow.matrix);
   yellow.matrix.scale(0.45,0.45,0.45);
-  yellow.matrix.translate(-0.5, 0,0);
+  yellow.matrix.translate(-0.5, 0 + 0.1,0);
   yellow.render();
 
   // var head = new Cube();
@@ -280,28 +376,7 @@ function renderAllShapes() {
   // head.matrix.scale(0.7, 0.7, 0.7); // Scale down the size of the head
   // head.render();
 
-  // test box
-  // var earR = new Cube();
-  // earR.color = [251/255, 231/255, 239/255, 1.0];
-  // // box.matrix = leftArm.matrix;
-  // earR.matrix = yellowCoordinatesMat;
-  // earR.matrix.translate(0.10,0.5,0.01);
-  // // box.matrix.rotate(0,1,0,0);
-  // earR.matrix.rotate(-g_magentaAngle,1,0,0);
-  // earR.matrix.scale(0.1,0.41,0.1);
-  // // earL.matrix.translate(-0.5,0, -0.01);
-
-  // earR.render();
-
-
-  // // test box
-  // var earL = new Cube();
-  // earL.color = [251/255, 231/255, 239/255, 1.0];
-  // earL.matrix = yellowCoordinatesMat;
-  // earL.matrix.setTranslate(-0.2,0.25,0.01); 
-  // earL.matrix.rotate(-g_magentaAngle,1,0,0);
-  // earL.matrix.scale(0.1,0.41,0.1);
-  // earL.render();
+  
 
  // Right ear
   // Right ear
@@ -325,9 +400,6 @@ function renderAllShapes() {
   earL.matrix.rotate(-g_magentaAngleL,1,0,0);
   earL.matrix.scale(0.1,0.41,0.1);
   earL.render();
-
-
-
 
   // check the time at the end of the function and show on web page
   var duration = performance.now() - startTime;
