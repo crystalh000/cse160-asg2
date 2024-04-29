@@ -46,6 +46,9 @@ let g_armAngleL = 0;
 let g_bodyAngle = 0;
 let g_headAngle = 0;
 let g_headY = 0;
+var animalXRotation = 0;
+var animalYRotation = 0;
+
 
 
 function setUpWebGL() {
@@ -157,7 +160,42 @@ function main() {
 
   // Register function (event handler) to be called on a mouse press
   // canvas.onmousedown = click;
-  canvas.onmousemove = function(ev) { if(ev.buttons == 1) {click(ev) } };
+  // canvas.onmousemove = function(ev) { if(ev.buttons == 1) {click(ev) } };
+//   canvas.onmousemove = function(ev) {
+//     if(ev.buttons == 1) {
+//         click(ev);
+//     }
+
+//     // Calculate the rotation angles based on the mouse position
+//     var rect = canvas.getBoundingClientRect();
+//     var x = ev.clientX - rect.left;
+//     var y = ev.clientY - rect.top;
+//     var xRotation = (x / canvas.width) * 360; // Map x from [0, width] to [0, 360]
+//     var yRotation = (y / canvas.height) * 360; // Map y from [0, height] to [0, 360]
+
+//     // Apply the rotations to the animal
+//     animal.matrix.setRotate(xRotation, 1, 0, 0); // Rotate around x-axis
+//     animal.matrix.rotate(yRotation, 0, 1, 0); // Rotate around y-axis
+
+//     // Redraw the scene
+//     renderAllShapes();
+// };
+canvas.addEventListener('mousemove', function(event) {
+  var rect = canvas.getBoundingClientRect();
+  var x = event.clientX - rect.left;
+  var y = event.clientY - rect.top;
+
+  // Map the x and y positions to rotation angles
+  g_globalAngle = (x / canvas.width) * 360; // Map x from [0, width] to [0, 360]
+
+  // Redraw the scene
+  renderAllShapes();
+});
+
+
+  // for rotation of the animal
+
+
 
   // Specify the color for clearing <canvas>
   gl.clearColor(0.0, 0.0, 0.0, 1.0);
@@ -240,7 +278,7 @@ function convertCoordinatesEventToGL(ev) {
 
 function updateAnimationAngles() {
   if (g_yellowAnimation) {
-    g_yellowAngle = (15 * Math.sin(g_seconds));
+    g_yellowAngle = (15 * Math.sin(4* g_seconds));
   }
   if (g_magentaAnimation) {
     g_magentaAngleR = (25 * Math.sin(3 * g_seconds));
