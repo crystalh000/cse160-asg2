@@ -391,22 +391,19 @@ function renderAllShapes() {
   yellow.matrix.translate(-0.5, 0 + 0.1,0);
   yellow.render();
 
-  // cone 
-  // Create a new Cone object
-var cone = new Cone();
-cone.color = [137/255, 196/255, 244/255, 1.0]; // Set the color of the cone
 
-// Set the transformation matrix for the cone
-cone.matrix.translate(0.5, 0.5, 0.001);
-// cone.matrix.rotate(-5, 1, 0, 0); // Rotate the cone
-// cone.matrix.rotate(-g_yellowAngle, 1, 0, 0);
+  // draw cone hat on top
+  var radius = 0.5; // Set the radius of the cone
+  var height = 1; // Set the height of the cone
+  var segments = 20; // Set the number of segments of the cone
+  var cone = new Cone(radius, height, segments); // Set the radius, height, and segments as per your requirements
+  cone.color = [137/255, 196/255, 244/255, 1.0];  // Set the color of the cone
+  cone.matrix.set(yellowCoordinatesMat); // Start with the same transformation matrix as the head
+  cone.matrix.translate(0, 0.5, 0.18); // Adjust the position so the cone is on top of the head
+  cone.matrix.rotate(-90,1,0,0); // Adjust the size of the cone
 
-// Scale and translate the cone
-cone.matrix.scale(0.45, 0.45, 0.45);
-// cone.matrix.translate(-0.5, 0 + 0.1, 0);
-
-// Draw the cone
-cone.render();
+  cone.matrix.scale(0.2, 0.2, 0.2); // Adjust the size of the cone
+  cone.render();
 
 
 
