@@ -44,6 +44,8 @@ let maxLiftHeight = 0.1;
 let g_armAngleR = 0;
 let g_armAngleL = 0;
 let g_bodyAngle = 0;
+let g_headAngle = 0;
+let g_headY = 0;
 
 
 function setUpWebGL() {
@@ -271,7 +273,10 @@ function updateAnimationAngles() {
     // arm rotation
     g_armAngleL = Math.sin(4 * g_seconds) * maxSwingAngle;
     g_armAngleR = Math.sin(4 * g_seconds + Math.PI) * maxSwingAngle;
-  
+    
+    // head animation
+    g_headAngle = Math.sin(4* g_seconds) * 5;
+    // g_headY = Math.sin(g_seconds) * angleAmplitude;
   }
   
 }
@@ -358,11 +363,6 @@ function renderAllShapes() {
   armL.matrix.scale(0.1,0.4,0.15);
   armL.render();
 
-  // right arm
-  // var armR = new Cube();
-  // armR.color = [251/255, 231/255, 239/255, 1.0];
-  // armR.matrix.translate(0.25,-0.45,0.1);
-  // armR.matrix.scale(0.1,0.4,0.15);
 
   // armR.render();
   var armR = new Cube();
@@ -381,10 +381,11 @@ function renderAllShapes() {
   var yellow = new Cube();
   // yellow.color = [1,1,0,1];
   yellow.color = [251/255, 231/255, 239/255, 1.0];
-
-  yellow.matrix.setTranslate(0,-0.25 + 0.1,0.001);
-  yellow.matrix.rotate(-5,1,0,0); // rotate the arm
+  yellow.matrix.set(bodyCoordinatesMat); // Start with the same transformation matrix as the head
+  yellow.matrix.translate(0.25,0.455,0.001);
+  // yellow.matrix.rotate(-5,1,0,0); // rotate the arm
   yellow.matrix.rotate(-g_yellowAngle,1,0,0);
+  yellow.matrix.rotate(g_headAngle,0,1,0);
   
   var yellowCoordinatesMat=new Matrix4(yellow.matrix);
   yellow.matrix.scale(0.45,0.45,0.45);
@@ -399,7 +400,7 @@ function renderAllShapes() {
   var cone = new Cone(radius, height, segments); // Set the radius, height, and segments as per your requirements
   cone.color = [137/255, 196/255, 244/255, 1.0];  // Set the color of the cone
   cone.matrix.set(yellowCoordinatesMat); // Start with the same transformation matrix as the head
-  cone.matrix.translate(0, 0.5, 0.18); // Adjust the position so the cone is on top of the head
+  cone.matrix.translate(0, 0.46, 0.18); // Adjust the position so the cone is on top of the head
   cone.matrix.rotate(-90,1,0,0); // Adjust the size of the cone
 
   cone.matrix.scale(0.2, 0.2, 0.2); // Adjust the size of the cone
@@ -416,7 +417,7 @@ function renderAllShapes() {
   // earR.matrix = new Matrix4(yellowCoordinatesMat);
   earR.matrix.set(yellowCoordinatesMat); // Start with the head's transformations
 
-  earR.matrix.translate(0.10,0.5,0.01);
+  earR.matrix.translate(0.10,0.45,0.01);
   earR.matrix.rotate(-g_magentaAngleR,1,0,0);
   earR.matrix.scale(0.1,0.41,0.1);
   earR.render();
@@ -427,7 +428,7 @@ function renderAllShapes() {
   // earL.matrix = new Matrix4(yellowCoordinatesMat);
   earL.matrix.set(yellowCoordinatesMat); // Start with the head's transformations
 
-  earL.matrix.translate(-0.2,0.5,0.01); 
+  earL.matrix.translate(-0.2,0.45,0.01); 
   earL.matrix.rotate(-g_magentaAngleL,1,0,0);
   earL.matrix.scale(0.1,0.41,0.1);
   earL.render();
