@@ -430,6 +430,16 @@ function renderAllShapes() {
   yellow.matrix.translate(-0.5, 0 + 0.1,0);
   yellow.render();
 
+  // draw tail 
+  var tail = new Cube();
+  // yellow.color = [1,1,0,1];
+  tail.color = [250/255,248/255,246/255, 1.0];
+  tail.matrix.set(bodyCoordinatesMat); // Start with the same transformation matrix as the head
+  tail.matrix.translate(0.15,0.1,0.5);
+  // yellow.matrix.rotate(-5,1,0,0); // rotate the arm
+  tail.matrix.scale(0.1,0.1,0.1);
+  tail.render();
+
 
   // draw cone hat on top
   var radius = 0.5; // Set the radius of the cone
