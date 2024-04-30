@@ -39,6 +39,7 @@ let g_globalAngle = 0; // Add this line
 let g_yellowAnimation=false;
 let g_magentaAnimation=false;
 let g_runAnimation = false;
+let g_pokeAnimation = false;
 let maxSwingAngle = 25;
 let maxLiftHeight = 0.1;
 let g_armAngleR = 0;
@@ -46,6 +47,7 @@ let g_armAngleL = 0;
 let g_bodyAngle = 0;
 let g_headAngle = 0;
 let g_headY = 0;
+var g_jumpHeight = 0;
 var animalXRotation = 0;
 var animalYRotation = 0;
 
@@ -75,8 +77,6 @@ function setUpWebGL() {
    
 
 }
-
-
 
 function connectVariablesToGLSL() {
   // Initialize shaders
@@ -158,52 +158,34 @@ function main() {
   // Set up actions for the HTML UI Elements
   addActionsForHTMLUI();
 
-  // Register function (event handler) to be called on a mouse press
-  // canvas.onmousedown = click;
-  // canvas.onmousemove = function(ev) { if(ev.buttons == 1) {click(ev) } };
-//   canvas.onmousemove = function(ev) {
-//     if(ev.buttons == 1) {
-//         click(ev);
-//     }
+  // rotation of animal using mouse
+  canvas.addEventListener('mousemove', function(event) {
+    var rect = canvas.getBoundingClientRect();
+    var x = event.clientX - rect.left;
+    var y = event.clientY - rect.top;
 
-//     // Calculate the rotation angles based on the mouse position
-//     var rect = canvas.getBoundingClientRect();
-//     var x = ev.clientX - rect.left;
-//     var y = ev.clientY - rect.top;
-//     var xRotation = (x / canvas.width) * 360; // Map x from [0, width] to [0, 360]
-//     var yRotation = (y / canvas.height) * 360; // Map y from [0, height] to [0, 360]
+    // Map the x and y positions to rotation angles
+    g_globalAngle = (x / canvas.width) * 360; // Map x from [0, width] to [0, 360]
 
-//     // Apply the rotations to the animal
-//     animal.matrix.setRotate(xRotation, 1, 0, 0); // Rotate around x-axis
-//     animal.matrix.rotate(yRotation, 0, 1, 0); // Rotate around y-axis
+    // Redraw the scene
+    renderAllShapes();
+  });
 
-//     // Redraw the scene
-//     renderAllShapes();
-// };
-canvas.addEventListener('mousemove', function(event) {
-  var rect = canvas.getBoundingClientRect();
-  var x = event.clientX - rect.left;
-  var y = event.clientY - rect.top;
+  canvas.addEventListener('mousedown', function(event) {
+    if(event.shiftKey) {
+        // The shift key was held down during the click
+        // Start the 'poke' animation
+        g_pokeAnimation = true;
+        //console.log("Poke animation started");
+    }
+  });
+    // Specify the color for clearing <canvas>
+    gl.clearColor(0.0, 0.0, 0.0, 1.0);
 
-  // Map the x and y positions to rotation angles
-  g_globalAngle = (x / canvas.width) * 360; // Map x from [0, width] to [0, 360]
-
-  // Redraw the scene
-  renderAllShapes();
-});
-
-
-  // for rotation of the animal
-
-
-
-  // Specify the color for clearing <canvas>
-  gl.clearColor(0.0, 0.0, 0.0, 1.0);
-
-  // Clear <canvas>
-  // gl.clear(gl.COLOR_BUFFER_BIT);
-  // renderAllShapes();
-  requestAnimationFrame(tick);
+    // Clear <canvas>
+    // gl.clear(gl.COLOR_BUFFER_BIT);
+    // renderAllShapes();
+    requestAnimationFrame(tick);
 
 }
 
@@ -285,14 +267,6 @@ function updateAnimationAngles() {
     g_magentaAngleL = (25 * Math.sin(3 * g_seconds));
   }
   if (g_runAnimation) {
-    // var swingAngle = Math.sin(4* g_seconds) * maxSwingAngle;
-
-    // // Calculate the lift height based on time
-    // var liftHeight = Math.abs(Math.sin(4 * g_seconds)) * maxLiftHeight;
-
-    // // Apply the swing and lift to the foot angle
-    // g_footAngleR = swingAngle;
-    // g_footLiftR = liftHeight;
     // Right foot
     var swingAngleR = Math.sin(4 * g_seconds) * maxSwingAngle;
     var liftHeightR = Math.abs(Math.sin(4 * g_seconds)) * maxLiftHeight;
@@ -315,6 +289,16 @@ function updateAnimationAngles() {
     // head animation
     g_headAngle = Math.sin(4* g_seconds) * 5;
     // g_headY = Math.sin(g_seconds) * angleAmplitude;
+  }
+
+  if (g_pokeAnimation) {
+    maxJumpHeight = 0.1;
+    g_jumpHeight = Math.sin(4* g_seconds) * maxJumpHeight;
+    console.log("Jump height: " + g_jumpHeight);
+    if (g_jumpHeight < -1) {
+      g_pokeAnimation = false;
+      g_jumpHeight = 0;
+    }
   }
   
 }
@@ -339,7 +323,7 @@ function renderAllShapes() {
   // body.color = [1.0, 0.0, 0.0, 1.0];
   body = new Cube();
   body.color = [251/255, 231/255, 239/255, 1.0];
-  body.matrix.translate(-0.25, -0.75 + 0.2, 0.0);
+  body.matrix.translate(-0.25, -0.75 + 0.2 + g_jumpHeight , 0.0);
   body.matrix.rotate(g_bodyAngle, 0, 0, 1);
   var bodyCoordinatesMat=new Matrix4(body.matrix);
   body.matrix.scale(0.5, 0.5, 0.5); // Adjusted scale to be the same in all dimensions
@@ -378,16 +362,6 @@ function renderAllShapes() {
 
   // Render the foot
   footL.render();
-
-  // left arm
-  // var armL = new Cube();
-  // armL.color = [251/255, 231/255, 239/255, 1.0];
-  // armL.matrix.set(bodyCoordinatesMat); // Start with the head's transformations
-  // armL.matrix.translate(-0.35,-0.45,0.1);
-  // armL.matrix.rotate(-g_armAngleL,1,0,0);
-  // armL.matrix.scale(0.1,0.4,0.15);
-
-  // armL.render();
 
   // left arm
   var armL = new Cube();
@@ -454,11 +428,6 @@ function renderAllShapes() {
   cone.matrix.scale(0.2, 0.2, 0.2); // Adjust the size of the cone
   cone.render();
 
-
-
-  
-
- // Right ear
   // Right ear
   var earR = new Cube();
   earR.color = [251/255, 231/255, 239/255, 1.0];
