@@ -289,6 +289,12 @@ function updateAnimationAngles() {
     // head animation
     g_headAngle = Math.sin(4* g_seconds) * 5;
     // g_headY = Math.sin(g_seconds) * angleAmplitude;
+
+    // point ears back
+    g_magentaAngleL = -35;
+    g_magentaAngleR = -35;
+    g_magentaAnimation = true;
+
   }
 
   if (g_pokeAnimation) {
