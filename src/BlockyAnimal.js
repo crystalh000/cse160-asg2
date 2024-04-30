@@ -332,7 +332,7 @@ function renderAllShapes() {
   // right foot
   var footR = new Cube();
   footR.color = [251/255, 231/255, 239/255, 1.0];
-  footR.matrix.translate(0.15,-0.7,0.15); 
+  footR.matrix.translate(0.15,-0.7 + g_jumpHeight,0.15); 
 
   // Move the foot up by the lift amount
   footR.matrix.translate(0, g_footLiftR, 0);
@@ -349,7 +349,7 @@ function renderAllShapes() {
   // Left foot
   var footL = new Cube();
   footL.color = [251/255, 231/255, 239/255, 1.0];
-  footL.matrix.translate(-0.25,-0.7,0.15); 
+  footL.matrix.translate(-0.25,-0.7 + g_jumpHeight,0.15); 
 
   // Move the foot up by the lift amount
   footL.matrix.translate(0, g_footLiftL, 0);
