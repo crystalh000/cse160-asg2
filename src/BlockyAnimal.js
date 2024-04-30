@@ -293,7 +293,7 @@ function updateAnimationAngles() {
     // point ears back
     g_magentaAngleL = -35;
     g_magentaAngleR = -35;
-    g_magentaAnimation = true;
+
 
   }
 
@@ -459,7 +459,8 @@ function renderAllShapes() {
   // check the time at the end of the function and show on web page
   var duration = performance.now() - startTime;
   // sendTextToHTML("numdot: " + len + " ms: " + Math.floor(duration) + " fps: " + Math.floor(1000/duration), "numdot");
-  // sendTextToHTML("ms: " + Math.floor(duration) + " fps: " + Math.floor(1000/duration));
+  // sendTextToHTML("ms: " + Math.floor(duration) + " fps: " + Math.floor(1000/duration)/10);
+  sendTextToHTML("ms: " + Math.floor(duration) + " fps: " + Math.floor(1000/duration)/10, "performance");
 }
 
 // Set the text of a HTML element
